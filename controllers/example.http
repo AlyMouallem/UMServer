@@ -1,0 +1,10 @@
+POST http://localhost:8000/api/users/ HTTP/1.1
+content-type: application/json
+
+{
+"first_name":"aly",
+"last_name":"batatat",
+"password":"batata",
+"email":"alymasda@gmail.com",
+"major":"Computer Science"
+}
