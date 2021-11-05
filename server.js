@@ -44,7 +44,7 @@ app.use((err, req, res, next) => {
 readdirSync("./routes").map((r) => app.use("", router));
 
 //server listen
-// const port = 8000;
-app.listen(process.env.PORT || 3000, () =>
+const port = 8000;
+app.listen(process.env.PORT || port, () =>
   console.log(`Server running on port ${port}`)
 );
