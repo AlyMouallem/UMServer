@@ -64,7 +64,7 @@ export const getClasses = async (req, res) => {
 
     return res.status(200).send(classes);
   } catch (err) {
-    console.log(err);
+    res.status(400).json({ error: err });
   }
 };
 export const getClassesDashboard = async (req, res) => {
@@ -78,7 +78,7 @@ export const getClassesDashboard = async (req, res) => {
 
     return res.status(200).send(classes);
   } catch (err) {
-    console.log(err);
+    res.status(400).json({ error: err });
   }
 };
 
@@ -89,7 +89,7 @@ export const getClassByCode = async (req, res) => {
     const clas = await Class.find({ "course.code": code });
     return res.status(200).send(clas);
   } catch (err) {
-    console.log(err);
+    res.status(400).json({ error: err });
   }
 };
 export const getClassBySName = async (req, res) => {
@@ -98,7 +98,7 @@ export const getClassBySName = async (req, res) => {
     const clas = await Class.find({ "student.name": name });
     return res.status(200).send(clas);
   } catch (err) {
-    console.log(err);
+    res.status(400).json({ error: err });
   }
 };
 export const getClassByIName = async (req, res) => {
@@ -111,7 +111,7 @@ export const getClassByIName = async (req, res) => {
     });
     return res.status(200).send(clas);
   } catch (err) {
-    console.log(err);
+    res.status(400).json({ error: err });
   }
 };
 export const delClass = async (req, res) => {
