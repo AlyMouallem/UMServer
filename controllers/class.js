@@ -1,6 +1,5 @@
 import Class from "../models/class.js";
 import dotenv from "dotenv";
-import axios from "axios";
 dotenv.config();
 
 export const addClass = async (req, res) => {
@@ -25,22 +24,6 @@ export const updateClass = async (req, res) => {
         { $set: { "course.registered": `${yes}` } }
       );
     });
-
-    // const coursesWM = courses.filter((course) => course.grade != 0);
-
-    // res.cookie("t", token, { expire: new Date() + 9999 });
-    // return res.json({
-    //   token,
-    //   user: {
-    //     _id: user._id,
-    //     name: `${user.first_name} ${user.last_name}`,
-    //     email: user.email,
-    //     role: user.role,
-    //     major: user.major,
-    //   },
-    //   courses,
-    //   coursesWM,
-    // });
 
     return res.status(200).json({ message: "Registered Successfully" });
   } catch (err) {
@@ -102,6 +85,7 @@ export const getClassesDashboard = async (req, res) => {
 export const getClassByCode = async (req, res) => {
   try {
     const code = req.params.code;
+
     const clas = await Class.find({ "course.code": code });
     return res.status(200).send(clas);
   } catch (err) {

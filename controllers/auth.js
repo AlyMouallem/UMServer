@@ -156,6 +156,45 @@ export const signin = async (req, res) => {
         maxMin: [...maxMin],
       });
     } else {
+      const course = await Class.find({
+        "course.registered": "Yes",
+        "course.grades.total": { $ne: 0 },
+      });
+      const coursesWM = course.map(({ course, student }) => {
+        return {
+          code: course.code,
+          grade: course.grades.total,
+          student: student.name,
+        };
+      });
+      const codes = [...new Set(coursesWM.map(({ code }) => code))];
+
+      var maxMin = [];
+      for (let i = 0; i < codes.length; i++) {
+        maxMin[i] = await Class.find(
+          {
+            "course.code": codes[i],
+            "course.registered": "Yes",
+            "course.grades.total": { $ne: 0 },
+          },
+          {
+            "student.name": 1,
+            "course.instructor": 1,
+            "course.code": 1,
+            "course.grades.total": 1,
+          }
+        ).sort({ "course.grades.total": -1 });
+      }
+      maxMin = [...maxMin].map((student) =>
+        student.map(({ course, student }) => {
+          return {
+            code: course.code,
+            grade: course.grades.total,
+            student: student.name,
+            instructor: course.instructor,
+          };
+        })
+      );
       return res.json({
         token,
         user: {
@@ -163,8 +202,9 @@ export const signin = async (req, res) => {
           name: `${user.first_name} ${user.last_name}`,
           email: user.email,
           role: user.role,
-          major: user.major,
         },
+        coursesWM,
+        maxMin: [...maxMin],
       });
     }
   } catch (err) {

@@ -80,7 +80,7 @@ export const delCourse = async (req, res) => {
   try {
     const code = req.params.code;
     const result = await Course.deleteOne({ code: `${code}` });
-    const result2 = await Class.deleteOne({ "course.code": `${code}` });
+    const result2 = await Class.deleteMany({ "course.code": `${code}` });
     return res.json({ message: "Successfully deleted " });
   } catch (error) {
     return res.status(400).json(error);

@@ -81,27 +81,12 @@ router.get("/api/courses/instructor/:instructor", getCourseByInstructor);
 
 router
   .route("/api/classes/:name/:yn")
-  .get(requireSignin, hasAuthorization, getClasses)
-  .post(requireSignin, hasAuthorization, addClass)
-  .put(requireSignin, hasAuthorization, updateClass);
-router.get(
-  "/api/code-classes/:code",
-  requireSignin,
-  hasAuthorization,
-  getClassByCode
-);
-router.get(
-  "/api/student-classes/:name",
-  requireSignin,
-  hasAuthorization,
-  getClassBySName
-);
-router.get(
-  "/api/instructor-classes/:name/:code",
-  requireSignin,
-  hasAuthorization,
-  getClassByIName
-);
+  .get(getClasses)
+  .post(addClass)
+  .put(updateClass);
+router.get("/api/code-classes/:code", getClassByCode);
+router.get("/api/student-classes/:name", getClassBySName);
+router.get("/api/instructor-classes/:name/:code", getClassByIName);
 router.get(
   "/api/:name/:yn",
   requireSignin,
