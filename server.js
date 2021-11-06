@@ -29,7 +29,7 @@ app.use(compress());
 app.use(helmet());
 app.use(cors());
 app.use(express.json());
-app.use("/", authRoutes);
+app.use("", authRoutes);
 
 app.use((err, req, res, next) => {
   if (err.name === "UnauthorizedError") {
@@ -45,6 +45,4 @@ readdirSync("./routes").map((r) => app.use("", router));
 
 //server listen
 const port = 8000;
-app.listen(process.env.PORT || port, () =>
-  console.log(`Server running on port ${port}`)
-);
+app.listen(5000 || port);
