@@ -28,46 +28,22 @@ export const create = async (req, res) => {
         const classes = new Class(batata);
         await classes.save();
       });
-      await user.save();
     }
-    return res
-      .status(200)
-      .json({ ok: true, message: "Successfully signed up!." });
+    await user.save();
+    const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET);
+    return res.status(200).json({
+      token,
+      user: {
+        _id: user._id,
+        name: `${user.first_name} ${user.last_name}`,
+        email: user.email,
+        role: user.role,
+      },
+    });
   } catch (err) {
     return res.status(400).json(err);
   }
 };
-export const list = async (req, res) => {
-  try {
-    let users = await User.find().select(
-      "first_name last_name email major updated created"
-    );
-    res.json(users);
-  } catch (err) {
-    return res.status(400).json({ error: err });
-  }
-};
-export const getAllStudents = async (req, res) => {
-  try {
-    let users = await User.find({ role: "Student" }).select(
-      "first_name last_name email major"
-    );
-    res.json(users);
-  } catch (err) {
-    return res.status(400).json({ error: err });
-  }
-};
-export const getAllInstructors = async (req, res) => {
-  try {
-    let users = await User.find({ role: "Instructor" }).select(
-      "first_name last_name email major "
-    );
-    res.json(users);
-  } catch (err) {
-    return res.status(400).json({ error: err });
-  }
-};
-
 export const signin = async (req, res) => {
   try {
     let user = await User.findOne({ email: req.body.email });
@@ -209,6 +185,36 @@ export const signin = async (req, res) => {
     }
   } catch (err) {
     return res.status(401).json({ error: "Error loggin in. Try again" });
+  }
+};
+export const list = async (req, res) => {
+  try {
+    let users = await User.find().select(
+      "first_name last_name email major updated created"
+    );
+    res.json(users);
+  } catch (err) {
+    return res.status(400).json({ error: err });
+  }
+};
+export const getAllStudents = async (req, res) => {
+  try {
+    let users = await User.find({ role: "Student" }).select(
+      "first_name last_name email major"
+    );
+    res.json(users);
+  } catch (err) {
+    return res.status(400).json({ error: err });
+  }
+};
+export const getAllInstructors = async (req, res) => {
+  try {
+    let users = await User.find({ role: "Instructor" }).select(
+      "first_name last_name email major "
+    );
+    res.json(users);
+  } catch (err) {
+    return res.status(400).json({ error: err });
   }
 };
 
