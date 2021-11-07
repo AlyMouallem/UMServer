@@ -67,20 +67,6 @@ export const getClasses = async (req, res) => {
     res.status(400).json({ error: err });
   }
 };
-export const getClassesDashboard = async (req, res) => {
-  try {
-    const reg = req.params.yn;
-    const name = req.params.name;
-    const classes = await Class.find({
-      "course.registered": reg,
-      "student.name": name,
-    }).select("course.code course.grades.total");
-
-    return res.status(200).send(classes);
-  } catch (err) {
-    res.status(400).json({ error: err });
-  }
-};
 
 export const getClassByCode = async (req, res) => {
   try {

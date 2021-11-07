@@ -40,7 +40,6 @@ export const addMajor = async (req, res) => {
     return res.status(200).json({ message: "Successfully added major" });
   } catch (err) {
     return res.status(400).json({ message: "Could not add major" });
-    console.log(err);
   }
 };
 

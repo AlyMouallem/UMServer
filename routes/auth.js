@@ -33,7 +33,6 @@ import {
 
 import {
   getClasses,
-  getClassesDashboard,
   addClass,
   delClass,
   updateClass,
@@ -45,6 +44,9 @@ import {
 
 const router = express.Router();
 
+router.get("/", (req, res) => {
+  res.status(200).send(template());
+});
 router.route("/api/users").post(create).get(list);
 router.get("/api/students/", getAllStudents);
 router.get("/api/instructors/", getAllInstructors);
@@ -57,9 +59,6 @@ router
 
 router.param("userId", userByID);
 
-router.get("/", (req, res) => {
-  res.status(200).send(template());
-});
 router.route("/auth/signin").post(signin);
 router.route("/auth/signout").get(signout);
 
@@ -87,12 +86,7 @@ router
 router.get("/api/code-classes/:code", getClassByCode);
 router.get("/api/student-classes/:name", getClassBySName);
 router.get("/api/instructor-classes/:name/:code", getClassByIName);
-router.get(
-  "/api/:name/:yn",
-  requireSignin,
-  hasAuthorization,
-  getClassesDashboard
-);
+
 router
   .route("/api/instructor-classes/:name/:student/:code")
   .put(instructorUpdateMarks);

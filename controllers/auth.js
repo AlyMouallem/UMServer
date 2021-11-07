@@ -189,7 +189,7 @@ export const signin = async (req, res) => {
 };
 export const list = async (req, res) => {
   try {
-    let users = await User.find().select(
+    let users = await User.find({ role: { $ne: "Dean" } }).select(
       "first_name last_name email major updated created"
     );
     res.json(users);
