@@ -22,11 +22,10 @@ export const getMajor = async (req, res) => {
 };
 
 export const delMajor = async (req, res) => {
+  const name = req.params.name;
+
   try {
-    const name = req.params.name;
-
     const result = await Major.deleteOne({ name: `${name}` });
-
     return res.json({ message: "Successfully deleted" });
   } catch (error) {
     return res.status(400).json({ message: "Error deleting" });
@@ -48,7 +47,6 @@ export const updateMajor = async (req, res) => {
     const major = req.params.name;
     const { name } = req.body;
 
-    console.log(name);
     const result = await Major.updateOne(
       { name: `${major}` },
       { $set: { name: `${name}` } }
