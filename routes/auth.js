@@ -10,9 +10,11 @@ import {
   signin,
   signout,
   requireSignin,
-  hasAuthorization,
   getAllStudents,
   getAllInstructors,
+  currentStudent,
+  currentInstructor,
+  currentDean,
 } from "../controllers/auth.js";
 import {
   addMajor,
@@ -47,6 +49,10 @@ const router = express.Router();
 router.get("/", (req, res) => {
   res.status(200).send(template());
 });
+router.get("/current-student", requireSignin, currentStudent);
+router.get("/current-instructor", requireSignin, currentInstructor);
+router.get("/current-dean", requireSignin, currentDean);
+
 router.route("/api/users").post(create).get(list);
 router.get("/api/students/", getAllStudents);
 router.get("/api/instructors/", getAllInstructors);
@@ -54,8 +60,8 @@ router.get("/api/instructors/", getAllInstructors);
 router
   .route("/api/users/:userId")
   .get(requireSignin, read)
-  .put(requireSignin, hasAuthorization, update)
-  .delete(requireSignin, hasAuthorization, remove);
+  .put(requireSignin, update)
+  .delete(requireSignin, remove);
 
 router.param("userId", userByID);
 

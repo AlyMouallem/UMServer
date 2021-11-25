@@ -16,7 +16,13 @@ export const create = async (req, res) => {
     const user = new User(req.body);
     await user.save();
     await updateClasses(major, first_name, last_name);
-    const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET);
+    const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "7d",
+    });
+    res.cookie("token", token, {
+      httpOnly: true,
+      // secure: true, // only works on https
+    });
     return res.status(200).json({
       token,
       user: {
@@ -39,17 +45,23 @@ export const signin = async (req, res) => {
         .status("401")
         .json({ error: "Email and password don't match." });
     }
-    const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET);
+    const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "7d",
+    });
     const uname = `${user.first_name} ${user.last_name}`;
 
     const { courses, coursesWM, maxMin } = await checkRole(user.role, uname);
-
+    res.cookie("token", token, {
+      httpOnly: true,
+      // secure: true, // only works on https
+    });
     return res.json({
       token,
       user: {
         _id: user._id,
         name: `${user.first_name} ${user.last_name}`,
         email: user.email,
+        major: user.major,
         role: user.role,
       },
       courses,
@@ -192,17 +204,43 @@ export const signout = (req, res) => {
   });
 };
 
+export const currentDean = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+    if (user.role === "Dean") {
+      res.json({ ok: true });
+    } else {
+      res.json({ ok: false });
+    }
+  } catch (err) {
+    res.sendStatus(403);
+  }
+};
+export const currentInstructor = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+    if (user.role === "Dean" || user.role === "Instructor") {
+      res.json({ ok: true });
+    } else {
+      res.json({ ok: false });
+    }
+  } catch (err) {
+    res.sendStatus(403);
+  }
+};
+export const currentStudent = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+    if (user.role === "Dean" || user.role === "Student") {
+      return res.json({ ok: true });
+    } else {
+      return res.json({ ok: false });
+    }
+  } catch (err) {
+    res.sendStatus(403);
+  }
+};
 export const requireSignin = expressJwt({
   secret: process.env.JWT_SECRET,
-  userProperty: "auth",
   algorithms: ["HS256"],
 });
-export const hasAuthorization = (req, res, next) => {
-  const authorized = req.profile && req.auth && req.profile._id == req.auth._id;
-  if (!authorized) {
-    return res.status("403").json({
-      error: "User is not authorized",
-    });
-  }
-  next();
-};
